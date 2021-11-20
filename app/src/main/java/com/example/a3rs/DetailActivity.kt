@@ -1,4 +1,4 @@
-package com.example.a3rs
+package com.example.threer;
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,9 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.example.a3rs.databinding.ActivityDetailBinding
+import com.example.a3rs.DetailClass
+import com.example.threer.MainActivity
+import com.example.threer.databinding.ActivityDetailBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -28,11 +30,16 @@ class DetailActivity : AppCompatActivity() {
             val zipcode = binding.zipcode.text.toString()
             val phone = binding.phone.text.toString()
 
-            database = FirebaseDatabase.getInstance().getReference("Users")
+
+
+            if (name.isEmpty() || address.isEmpty() || city.isEmpty() || country.isEmpty() || zipcode.isEmpty() || phone.isEmpty()) {
+                Toast.makeText(this@DetailActivity, "Please fill all the Details", Toast.LENGTH_LONG).show();
+            } else{
+                database = FirebaseDatabase.getInstance().getReference("Users")
             val sharedPreferences: SharedPreferences = this.getSharedPreferences("3r", Context.MODE_PRIVATE)
-            val email = sharedPreferences.getString("email","example@gmail")
-            val newEmail= email?.dropLast(4)
-            val detailClass = DetailClass(email,name, address, city, country, zipcode, phone,"00")
+            val email = sharedPreferences.getString("email", "example@gmail")
+            val newEmail = email?.dropLast(4)
+            val detailClass = DetailClass(email, name, address, city, country, zipcode, phone)
 
 
             if (newEmail != null) {
@@ -46,24 +53,22 @@ class DetailActivity : AppCompatActivity() {
                     binding.phone.text.clear()
 
 
-                    val editor:SharedPreferences.Editor =  sharedPreferences.edit()
-                    editor.putString("name",name)
+                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                    editor.putString("name", name)
                     editor.apply()
                     editor.commit()
 
 
                     val intent = Intent(this@DetailActivity, MainActivity::class.java)
                     startActivity(intent)
-                    Toast.makeText(this,"Successfully added to database", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Congratulations You are registered", Toast.LENGTH_SHORT).show()
 
 
-
-                }.addOnFailureListener{
-                    Toast.makeText(this,"Failed", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
                 }
             }
-
-
+        }
         }
 
     }
